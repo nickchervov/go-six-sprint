@@ -16,17 +16,12 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	resp, err := os.ReadFile("../index.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	r.ParseMultipartForm(10 << 20)
 	file, _, err := r.FormFile("myFile")
 	if file == nil {
@@ -59,6 +54,5 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write(resp)
 	w.Write([]byte(convertedData))
 }
