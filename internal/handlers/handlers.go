@@ -10,26 +10,31 @@ import (
 )
 
 func MainHandler(w http.ResponseWriter, r *http.Request) {
-	resp, err := os.ReadFile("../../index.html")
+	resp, err := os.ReadFile("../index.html")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
+	resp, err := os.ReadFile("../index.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	r.ParseMultipartForm(10 << 20)
 	file, _, err := r.FormFile("myFile")
 	if file == nil {
-		http.Error(w, "must upload a file", http.StatusBadRequest)
+		http.Error(w, "must upload a file", http.StatusInternalServerError)
 		return
 	}
 	if err != nil {
-		http.Error(w, "file upload error", http.StatusBadRequest)
+		http.Error(w, "file upload error", http.StatusInternalServerError)
 		return
 	}
 	defer file.Close()
@@ -52,7 +57,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
 	w.Write([]byte(convertedData))
 }
