@@ -10,7 +10,7 @@ import (
 )
 
 func MainHandler(w http.ResponseWriter, r *http.Request) {
-	resp, err := os.ReadFile("../index.html")
+	resp, err := os.ReadFile("../../index.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
