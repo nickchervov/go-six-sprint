@@ -4,27 +4,27 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/service"
 )
 
-func MainHandler(w http.ResponseWriter, r *http.Request) {
-	resp, err := os.ReadFile("../../index.html")
+func ServeIndex(w http.ResponseWriter, r *http.Request) {
+	resp, err := os.ReadFile("index.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Add("Content-Type", "charset=utf-8")
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(10 << 20)
-	file, _, err := r.FormFile("myFile")
+	file, handler, err := r.FormFile("myFile")
 	if file == nil {
 		http.Error(w, "must upload a file", http.StatusInternalServerError)
 		return
@@ -47,14 +47,13 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	localFileName := time.Now().Format("02.01.06_15_04_05") + ".txt"
+	localFileName := filepath.Join(time.Now().Format("02.01.06_15_04_05"), filepath.Ext(handler.Filename))
 	if err := os.WriteFile(localFileName, []byte(convertedData), 0755); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Add("Content-Type", "charset=utf-8")
+	w.Header().Set("Content-Type", "text/html;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(convertedData))
 }

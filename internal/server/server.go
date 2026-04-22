@@ -15,7 +15,7 @@ type Server struct {
 
 func CreateServer(l *log.Logger) *Server {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", handlers.MainHandler)
+	mux.HandleFunc("/", handlers.ServeIndex)
 	mux.HandleFunc("/upload", handlers.UploadHandler)
 
 	var s http.Server
