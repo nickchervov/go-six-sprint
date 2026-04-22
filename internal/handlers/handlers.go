@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/service"
@@ -47,7 +46,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	timeStamp := strings.ReplaceAll(time.Now().UTC().String(), "/", "-")
+	timeStamp := time.Now().Format("02-01-06_15-04-05")
 	fileExt := filepath.Ext(handler.Filename)
 	localFileName := filepath.Join(timeStamp, fileExt)
 
