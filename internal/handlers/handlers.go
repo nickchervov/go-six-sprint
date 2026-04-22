@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -48,7 +49,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	timeStamp := time.Now().Format("02-01-06_15-04-05")
 	fileExt := filepath.Ext(handler.Filename)
-	localFileName := filepath.Join(timeStamp, fileExt)
+	localFileName := fmt.Sprintf("%s%s", timeStamp, fileExt)
 
 	if err := os.WriteFile(localFileName, []byte(convertedData), 0755); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
